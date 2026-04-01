@@ -17,7 +17,8 @@ services:
       retries: 10
       start_period: 20s
     networks:
-      - glpi_network
+      glpi_network:
+        ipv4_address: 172.28.0.10
 
   glpi:
     image: elestio/glpi:latest
@@ -38,7 +39,8 @@ services:
     volumes:
       - glpi_files:/var/www/html/files
     networks:
-      - glpi_network
+      glpi_network:
+        ipv4_address: 172.28.0.11
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -55,7 +57,8 @@ services:
       - /var/lib/docker:/var/lib/docker:ro
       - /dev/disk:/dev/disk:ro
     networks:
-      - glpi_network
+      glpi_network:
+        ipv4_address: 172.28.0.12
 
   prometheus:
     image: prom/prometheus:latest
@@ -72,10 +75,12 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     networks:
-      - glpi_network
+      glpi_network:
+        ipv4_address: 172.28.0.13
 
   grafana:
     image: grafana/grafana:latest
+    platform: linux/amd64
     container_name: tp_grafana
     restart: unless-stopped
     depends_on:
@@ -86,16 +91,25 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+      GF_LOG_LEVEL: debug
+      GF_LOG_FILTERS: tsdb.mysql:debug
+      GLPI_DB_NAME: ${GLPI_DB_NAME}
+      GLPI_DB_USER: ${GLPI_DB_USER}
+      GLPI_DB_PASSWORD: ${GLPI_DB_PASSWORD}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
     networks:
-      - glpi_network
+      glpi_network:
+        ipv4_address: 172.28.0.14
 
 networks:
   glpi_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
 
 volumes:
   mariadb_data:

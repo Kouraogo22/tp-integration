@@ -50,8 +50,8 @@
       },
       "targets": [
         {
-          "expr": "rate(container_cpu_usage_seconds_total{name!=\"\"}[5m]) * 100",
-          "legendFormat": "{{name}}",
+          "expr": "rate(container_cpu_usage_seconds_total{id!=\"/\",id!=\"/docker\"}[5m]) * 100",
+          "legendFormat": "{{id}}",
           "refId": "A"
         }
       ],
@@ -89,8 +89,8 @@
       },
       "targets": [
         {
-          "expr": "container_memory_usage_bytes{name!=\"\"} / 1024 / 1024",
-          "legendFormat": "{{name}}",
+          "expr": "container_memory_usage_bytes{id!=\"/\",id!=\"/docker\"} / 1024 / 1024",
+          "legendFormat": "{{id}}",
           "refId": "A"
         }
       ],
@@ -128,13 +128,13 @@
       },
       "targets": [
         {
-          "expr": "rate(container_network_receive_bytes_total{name!=\"\"}[5m])",
-          "legendFormat": "Entrant - {{name}}",
+          "expr": "rate(container_network_receive_bytes_total{id!=\"/\",id!=\"/docker\"}[5m])",
+          "legendFormat": "Entrant - {{id}}",
           "refId": "A"
         },
         {
-          "expr": "rate(container_network_transmit_bytes_total{name!=\"\"}[5m])",
-          "legendFormat": "Sortant - {{name}}",
+          "expr": "rate(container_network_transmit_bytes_total{id!=\"/\",id!=\"/docker\"}[5m])",
+          "legendFormat": "Sortant - {{id}}",
           "refId": "B"
         }
       ],
@@ -187,7 +187,7 @@
       },
       "targets": [
         {
-          "expr": "count(container_last_seen{name!=\"\"})",
+          "expr": "count(container_last_seen{id!=\"/\",id!=\"/docker\"})",
           "legendFormat": "conteneurs",
           "refId": "A"
         }

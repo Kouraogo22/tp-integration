@@ -68,9 +68,11 @@ Note de compatibilite: les images GLPI courantes demandent MariaDB/MySQL a l'ins
 ### Targets configures
 - `prometheus` -> `localhost:9090`
 - `cadvisor` -> `cadvisor:8080`
-- `glpi` -> `glpi:80`
 
-Statut attendu : `UP` pour `prometheus` et `cadvisor` (et `glpi` si endpoint disponible).
+Statut attendu : `UP` pour `prometheus` et `cadvisor`.
+Statut observe le 1 avril 2026 : `prometheus=UP`, `cadvisor=UP`.
+
+Note importante: un job `glpi` avait ete teste au debut, mais GLPI ne fournit pas nativement l'endpoint `/metrics`. Prometheus recevait donc `404 Not Found` sur `http://glpi/metrics`. Le job a ete retire de la configuration pour conserver des targets coherents.
 
 ### Difference entre `scrape_interval` et `evaluation_interval`
 - `scrape_interval` : frequence de collecte des metriques depuis les targets.
@@ -85,6 +87,13 @@ Interpretation : taux d'augmentation de la consommation CPU (en secondes CPU/sec
 ## 8) Analyse BDD GLPI
 Voir le livrable : `analyse/analyse_bdd_glpi.md`.
 
+## 8bis) Donnees de demonstration
+Pour alimenter les panels Grafana, des donnees de test ont ete injectees :
+- 12 tickets (prefixe `TP-DEMO-`)
+- 5 ordinateurs
+- 3 peripheriques
+- 4 categories ITIL (`Reseau`, `Materiel`, `Logiciel`, `Acces`)
+
 ## 9) Arret et nettoyage
 - Arret simple :
   ```bash
@@ -98,6 +107,7 @@ Voir le livrable : `analyse/analyse_bdd_glpi.md`.
 ## 10) Difficultes rencontrees et solutions
 - Le premier demarrage de GLPI est plus long que les autres services, ce qui peut donner l'impression d'un blocage. Solution : suivre `docker compose logs -f glpi`.
 - La connexion Grafana -> MariaDB echoue si les variables d'environnement ne sont pas alignees entre `.env` et provisioning datasource. Solution : centraliser les secrets dans `.env`.
-- Les dates GLPI sont souvent stockees sous forme de timestamp Unix. Solution : utiliser `FROM_UNIXTIME()` dans les requetes SQL Grafana.
+- Les panels GLPI peuvent etre vides si les requetes SQL n'utilisent pas le bon type de date. Solution : utiliser directement `date_creation` (type `timestamp` dans cette installation) dans les filtres temporels.
 - Les metriques cAdvisor exposent aussi des conteneurs systeme. Solution : filtrer avec `name!=""` dans les requetes PromQL.
 - Sur certains environnements (surtout macOS), les chemins montes pour cAdvisor peuvent differer. Solution : adapter les volumes montes en lecture seule selon l'hote.
+- Prometheus renvoyait `404 Not Found` sur `glpi:80/metrics` car GLPI n'expose pas cet endpoint nativement. Solution : suppression du job `glpi` dans `prometheus/prometheus.yml` et concentration du monitoring sur `prometheus` + `cadvisor`.

@@ -126,7 +126,7 @@
         {
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT COUNT(*) AS tickets_aujourdhui FROM glpi_tickets WHERE FROM_UNIXTIME(date_creation) >= CURDATE() AND FROM_UNIXTIME(date_creation) < CURDATE() + INTERVAL 1 DAY;",
+          "rawSql": "SELECT COUNT(*) AS tickets_aujourdhui FROM glpi_tickets WHERE date_creation >= CURDATE() AND date_creation < CURDATE() + INTERVAL 1 DAY;",
           "refId": "A"
         }
       ],
@@ -257,7 +257,7 @@
         {
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT DATE(FROM_UNIXTIME(date_creation)) AS \"time\", COUNT(*) AS tickets_crees FROM glpi_tickets WHERE FROM_UNIXTIME(date_creation) >= NOW() - INTERVAL 30 DAY GROUP BY DATE(FROM_UNIXTIME(date_creation)) ORDER BY \"time\";",
+          "rawSql": "SELECT DATE(date_creation) AS \"time\", COUNT(*) AS tickets_crees FROM glpi_tickets WHERE date_creation >= NOW() - INTERVAL 30 DAY GROUP BY DATE(date_creation) ORDER BY 1;",
           "refId": "A"
         }
       ],
@@ -340,7 +340,7 @@
         {
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT id, name AS titre, CASE status WHEN 1 THEN 'Nouveau' WHEN 2 THEN 'En cours (attribue)' WHEN 3 THEN 'En cours (planifie)' WHEN 4 THEN 'En attente' WHEN 5 THEN 'Resolu' WHEN 6 THEN 'Clos' ELSE 'Autre' END AS statut, FROM_UNIXTIME(date_creation) AS date_creation, priority FROM glpi_tickets ORDER BY date_creation DESC LIMIT 20;",
+          "rawSql": "SELECT id, name AS titre, CASE status WHEN 1 THEN 'Nouveau' WHEN 2 THEN 'En cours (attribue)' WHEN 3 THEN 'En cours (planifie)' WHEN 4 THEN 'En attente' WHEN 5 THEN 'Resolu' WHEN 6 THEN 'Clos' ELSE 'Autre' END AS statut, date_creation, priority FROM glpi_tickets ORDER BY date_creation DESC LIMIT 20;",
           "refId": "A"
         }
       ],

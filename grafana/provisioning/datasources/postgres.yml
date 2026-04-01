@@ -4,14 +4,17 @@ datasources:
   - name: GLPI-MySQL
     type: mysql
     access: proxy
-    url: mariadb:3306
-    database: ${GLPI_DB_NAME}
-    user: ${GLPI_DB_USER}
+    url: 172.28.0.10:3306
+    user: glpi_user
     secureJsonData:
-      password: ${GLPI_DB_PASSWORD}
+      password: changeme
     jsonData:
+      database: glpi
       tlsAuth: false
       tlsAuthWithCACert: false
-      tlsSkipVerify: true
+      tlsSkipVerify: false
+      maxOpenConns: 10
+      maxIdleConns: 2
+      connMaxLifetime: 14400
     isDefault: true
     editable: true

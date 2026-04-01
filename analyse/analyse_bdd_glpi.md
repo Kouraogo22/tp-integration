@@ -45,10 +45,10 @@ Statuts GLPI :
 
 ```sql
 SELECT
-  DATE_FORMAT(FROM_UNIXTIME(date_creation), '%Y-%m-01') AS mois,
+  DATE_FORMAT(date_creation, '%Y-%m-01') AS mois,
   COUNT(*) AS tickets_crees
 FROM glpi_tickets
-WHERE FROM_UNIXTIME(date_creation) >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 11 MONTH), '%Y-%m-01')
+WHERE date_creation >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 11 MONTH), '%Y-%m-01')
 GROUP BY 1
 ORDER BY 1;
 ```
