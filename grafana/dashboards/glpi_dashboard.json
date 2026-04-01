@@ -1,0 +1,410 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS total_tickets_ouverts FROM glpi_tickets WHERE status IN (1,2,3,4);",
+          "refId": "A"
+        }
+      ],
+      "title": "Tickets ouverts",
+      "type": "stat"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 25
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS tickets_aujourdhui FROM glpi_tickets WHERE FROM_UNIXTIME(date_creation) >= CURDATE() AND FROM_UNIXTIME(date_creation) < CURDATE() + INTERVAL 1 DAY;",
+          "refId": "A"
+        }
+      ],
+      "title": "Tickets crees aujourd'hui",
+      "type": "stat"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT (SELECT COUNT(*) FROM glpi_computers) + (SELECT COUNT(*) FROM glpi_peripherals) AS total_equipements;",
+          "refId": "A"
+        }
+      ],
+      "title": "Equipements enregistres",
+      "type": "stat"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "id": 4,
+      "options": {
+        "displayLabels": [
+          "name",
+          "value",
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT CASE status WHEN 1 THEN 'Nouveau' WHEN 2 THEN 'En cours (attribue)' WHEN 3 THEN 'En cours (planifie)' WHEN 4 THEN 'En attente' WHEN 5 THEN 'Resolu' WHEN 6 THEN 'Clos' ELSE 'Autre' END AS statut, COUNT(*) AS nombre FROM glpi_tickets GROUP BY status ORDER BY status;",
+          "refId": "A"
+        }
+      ],
+      "title": "Repartition des tickets par statut",
+      "type": "piechart"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT DATE(FROM_UNIXTIME(date_creation)) AS \"time\", COUNT(*) AS tickets_crees FROM glpi_tickets WHERE FROM_UNIXTIME(date_creation) >= NOW() - INTERVAL 30 DAY GROUP BY DATE(FROM_UNIXTIME(date_creation)) ORDER BY \"time\";",
+          "refId": "A"
+        }
+      ],
+      "title": "Evolution des tickets (30 derniers jours)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "orientation": "auto",
+        "showValue": "always",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 100
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT COALESCE(c.name, 'Sans categorie') AS categorie, COUNT(*) AS nombre FROM glpi_tickets t LEFT JOIN glpi_itilcategories c ON c.id = t.itilcategories_id GROUP BY 1 ORDER BY 2 DESC LIMIT 5;",
+          "refId": "A"
+        }
+      ],
+      "title": "Top 5 categories de tickets",
+      "type": "barchart"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT id, name AS titre, CASE status WHEN 1 THEN 'Nouveau' WHEN 2 THEN 'En cours (attribue)' WHEN 3 THEN 'En cours (planifie)' WHEN 4 THEN 'En attente' WHEN 5 THEN 'Resolu' WHEN 6 THEN 'Clos' ELSE 'Autre' END AS statut, FROM_UNIXTIME(date_creation) AS date_creation, priority FROM glpi_tickets ORDER BY date_creation DESC LIMIT 20;",
+          "refId": "A"
+        }
+      ],
+      "title": "20 derniers tickets",
+      "type": "table"
+    },
+    {
+      "datasource": "GLPI-MySQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT priority, COUNT(*) AS total FROM glpi_tickets GROUP BY priority ORDER BY priority;",
+          "refId": "A"
+        }
+      ],
+      "title": "Panel libre: tickets par priorite",
+      "type": "barchart"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": [
+    "glpi",
+    "mysql"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "GLPI - Dashboard Metier",
+  "uid": "glpi-dashboard",
+  "version": 1,
+  "weekStart": ""
+}
